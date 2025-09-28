@@ -207,24 +207,50 @@ class OptionsController {
 
         limitsGrid.innerHTML = '';
 
-        const platforms = [
-            { key: 'facebook.com', name: 'Facebook', icon: '📘' },
-            { key: 'instagram.com', name: 'Instagram', icon: '📷' },
-            { key: 'twitter.com', name: 'Twitter', icon: '🐦' },
-            { key: 'x.com', name: 'X', icon: '❌' },
-            { key: 'tiktok.com', name: 'TikTok', icon: '🎵' },
-            { key: 'linkedin.com', name: 'LinkedIn', icon: '💼' },
-            { key: 'reddit.com', name: 'Reddit', icon: '🤖' },
-            { key: 'youtube.com', name: 'YouTube', icon: '📺' },
-            { key: 'pinterest.com', name: 'Pinterest', icon: '📌' }
-        ];
+        // Get all platforms from settings (including custom ones)
+        const allPlatforms = [];
+        
+        // Add built-in platforms with their display info
+        const builtInPlatforms = {
+            'facebook.com': { name: 'Facebook', icon: '📘' },
+            'instagram.com': { name: 'Instagram', icon: '📷' },
+            'twitter.com': { name: 'Twitter', icon: '🐦' },
+            'x.com': { name: 'X', icon: '❌' },
+            'tiktok.com': { name: 'TikTok', icon: '🎵' },
+            'linkedin.com': { name: 'LinkedIn', icon: '💼' },
+            'reddit.com': { name: 'Reddit', icon: '🤖' },
+            'youtube.com': { name: 'YouTube', icon: '📺' },
+            'pinterest.com': { name: 'Pinterest', icon: '📌' },
+            'snapchat.com': { name: 'Snapchat', icon: '👻' }
+        };
 
-        platforms.forEach(platform => {
-            const platformSettings = this.currentSettings?.platforms?.[platform.key];
-            if (platformSettings?.enabled) {
-                const card = this.createLimitCard(platform, platformSettings);
-                limitsGrid.appendChild(card);
+        // Process all platforms in settings
+        if (this.currentSettings?.platforms) {
+            Object.entries(this.currentSettings.platforms).forEach(([key, platformSettings]) => {
+                if (platformSettings?.enabled) {
+                    const platformInfo = {
+                        key: key,
+                        name: builtInPlatforms[key]?.name || platformSettings.name || key,
+                        icon: builtInPlatforms[key]?.icon || platformSettings.icon || '🌐',
+                        isCustom: platformSettings.isCustom || false
+                    };
+                    allPlatforms.push(platformInfo);
+                }
+            });
+        }
+
+        // Sort platforms - built-in first, then custom
+        allPlatforms.sort((a, b) => {
+            if (a.isCustom !== b.isCustom) {
+                return a.isCustom ? 1 : -1;
             }
+            return a.name.localeCompare(b.name);
+        });
+
+        allPlatforms.forEach(platform => {
+            const platformSettings = this.currentSettings.platforms[platform.key];
+            const card = this.createLimitCard(platform, platformSettings);
+            limitsGrid.appendChild(card);
         });
 
         if (limitsGrid.children.length === 0) {
@@ -447,7 +473,13 @@ class OptionsController {
             const minutes = Math.floor(usage / 60);
             if (minutes > mostUsedTime) {
                 mostUsedTime = minutes;
-                mostUsedPlatform = platform.replace('.com', '').replace(/^./, str => str.toUpperCase());
+                // Get proper display name from settings
+                const platformSettings = this.currentSettings?.platforms?.[platform];
+                if (platformSettings) {
+                    mostUsedPlatform = platformSettings.name || platform.replace('.com', '').replace(/^./, str => str.toUpperCase());
+                } else {
+                    mostUsedPlatform = platform.replace('.com', '').replace(/^./, str => str.toUpperCase());
+                }
             }
         });
 
@@ -488,11 +520,29 @@ class OptionsController {
         if (!breakdown) return;
 
         const dailyUsage = this.currentStats?.dailyUsage || {};
-        const platformNames = {
-            'facebook.com': { name: 'Facebook', icon: '📘' },
-            'instagram.com': { name: 'Instagram', icon: '📷' },
-            'twitter.com': { name: 'Twitter', icon: '🐦' },
-            'youtube.com': { name: 'YouTube', icon: '📺' }
+        
+        // Get platform info from settings (includes custom sites)
+        const getPlatformInfo = (platform) => {
+            const platformSettings = this.currentSettings?.platforms?.[platform];
+            if (platformSettings) {
+                return {
+                    name: platformSettings.name || platform.replace('.com', '').replace(/^./, str => str.toUpperCase()),
+                    icon: platformSettings.icon || '🌐'
+                };
+            }
+            
+            // Fallback for built-in platforms if not in settings
+            const builtInPlatforms = {
+                'facebook.com': { name: 'Facebook', icon: '📘' },
+                'instagram.com': { name: 'Instagram', icon: '📷' },
+                'twitter.com': { name: 'Twitter', icon: '🐦' },
+                'x.com': { name: 'X', icon: '❌' },
+                'youtube.com': { name: 'YouTube', icon: '📺' },
+                'tiktok.com': { name: 'TikTok', icon: '🎵' },
+                'linkedin.com': { name: 'LinkedIn', icon: '💼' },
+                'reddit.com': { name: 'Reddit', icon: '🤖' }
+            };
+            return builtInPlatforms[platform] || { name: platform, icon: '🌐' };
         };
 
         breakdown.innerHTML = '';
@@ -501,7 +551,7 @@ class OptionsController {
             .slice(0, 5) // Top 5 platforms
             .forEach(([platform, usage]) => {
                 const minutes = Math.floor(usage / 60);
-                const platformInfo = platformNames[platform] || { name: platform, icon: '🌐' };
+                const platformInfo = getPlatformInfo(platform);
                 
                 const item = document.createElement('div');
                 item.className = 'breakdown-item';

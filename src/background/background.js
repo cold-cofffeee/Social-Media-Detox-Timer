@@ -55,8 +55,15 @@ class DetoxTimer {
   }
 
   setupEventListeners() {
-    // Listen for tab updates
-    chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    // Listen for tab updates - block immediately on URL change
+    chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+      // Block as soon as URL changes (loading state) if in focus mode
+      if (changeInfo.url || (changeInfo.status === 'loading' && tab.url)) {
+        const url = changeInfo.url || tab.url;
+        await this.checkAndBlockIfNeeded(tabId, url);
+      }
+      
+      // Continue with normal handling when complete
       if (changeInfo.status === 'complete' && tab.url) {
         this.handleTabUpdate(tabId, tab.url);
       }
@@ -66,7 +73,29 @@ class DetoxTimer {
     chrome.tabs.onActivated.addListener(async (activeInfo) => {
       const tab = await chrome.tabs.get(activeInfo.tabId);
       if (tab.url) {
+        await this.checkAndBlockIfNeeded(activeInfo.tabId, tab.url);
         this.handleTabActivation(activeInfo.tabId, tab.url);
+      }
+    });
+
+    // Listen for new tabs created
+    chrome.tabs.onCreated.addListener(async (tab) => {
+      if (tab.url && tab.url !== 'chrome://newtab/') {
+        await this.checkAndBlockIfNeeded(tab.id, tab.url);
+      }
+    });
+
+    // Listen for navigation attempts (before page loads)
+    chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
+      if (details.frameId === 0) { // Main frame only
+        await this.checkAndBlockIfNeeded(details.tabId, details.url);
+      }
+    });
+
+    // Additional safety net for committed navigation
+    chrome.webNavigation.onCommitted.addListener(async (details) => {
+      if (details.frameId === 0) { // Main frame only
+        await this.checkAndBlockIfNeeded(details.tabId, details.url);
       }
     });
 
@@ -94,6 +123,7 @@ class DetoxTimer {
     const { settings } = await chrome.storage.local.get('settings');
     
     if (settings.platforms[platform]?.enabled) {
+      console.log(`Tracking started for ${platform} (tab ${tabId})`);
       await this.startTracking(tabId, platform);
       
       // Check if in focus mode
@@ -288,10 +318,36 @@ class DetoxTimer {
     }
   }
 
+  async checkAndBlockIfNeeded(tabId, url) {
+    try {
+      const { settings } = await chrome.storage.local.get('settings');
+      
+      // Check if focus mode is active
+      if (!settings.focusMode || !settings.focusUntil) return;
+      
+      // Check if focus mode has expired
+      if (new Date() > new Date(settings.focusUntil)) {
+        await this.endFocusMode();
+        return;
+      }
+      
+      // Check if URL is a social media platform
+      const platform = await this.extractPlatform(url);
+      if (platform && settings.platforms[platform]?.enabled) {
+        console.log(`Focus mode active: Blocking ${platform} on tab ${tabId}`);
+        await this.blockSite(tabId, platform);
+        return true;
+      }
+    } catch (error) {
+      console.error('Error checking focus mode block:', error);
+    }
+    return false;
+  }
+
   async blockSite(tabId, platform) {
     try {
       const blockedUrl = chrome.runtime.getURL('src/content/blocked.html') + 
-                        `?platform=${encodeURIComponent(platform)}&tabId=${tabId}`;
+                        `?platform=${encodeURIComponent(platform)}&tabId=${tabId}&reason=focus`;
       await chrome.tabs.update(tabId, { url: blockedUrl });
     } catch (error) {
       console.error('Error blocking site:', error);
@@ -306,14 +362,32 @@ class DetoxTimer {
       settings.focusMode = false;
       settings.focusUntil = null;
       chrome.alarms.clear('focusModeEnd');
+      
+      // Show end notification
+      chrome.notifications.create({
+        type: 'basic',
+        iconUrl: 'icons/icon48.png',
+        title: '🎯 Focus Mode Ended',
+        message: 'Focus mode has been turned off. You can now access social media sites.',
+        priority: 2
+      });
     } else {
       // Turn on focus mode
       settings.focusMode = true;
       settings.focusUntil = new Date(Date.now() + duration * 60 * 1000).toISOString();
       chrome.alarms.create('focusModeEnd', { delayInMinutes: duration });
       
-      // Close all social media tabs
+      // Close all social media tabs immediately
       await this.closeAllSocialMediaTabs();
+      
+      // Show start notification
+      chrome.notifications.create({
+        type: 'basic',
+        iconUrl: 'icons/icon48.png',
+        title: '🎯 Focus Mode Activated!',
+        message: `All social media sites are now blocked for ${duration} minutes. Stay focused!`,
+        priority: 2
+      });
     }
     
     await chrome.storage.local.set({ settings });
@@ -327,6 +401,39 @@ class DetoxTimer {
         focusUntil: settings.focusUntil
       });
     });
+  }
+
+  async endFocusMode() {
+    const { settings } = await chrome.storage.local.get('settings');
+    
+    if (settings.focusMode) {
+      settings.focusMode = false;
+      settings.focusUntil = null;
+      
+      await chrome.storage.local.set({ settings });
+      
+      // Clear the alarm
+      chrome.alarms.clear('focusModeEnd');
+      
+      // Show completion notification
+      chrome.notifications.create({
+        type: 'basic',
+        iconUrl: 'icons/icon48.png',
+        title: '✅ Focus Session Complete!',
+        message: 'Great job! Your focus session has ended. You can now access social media sites.',
+        priority: 2
+      });
+      
+      // Notify all tabs
+      const tabs = await chrome.tabs.query({});
+      tabs.forEach(tab => {
+        chrome.tabs.sendMessage(tab.id, {
+          action: 'focusModeChanged',
+          focusMode: false,
+          focusUntil: null
+        });
+      });
+    }
   }
 
   async closeAllSocialMediaTabs() {
@@ -480,14 +587,22 @@ class DetoxTimer {
       ];
       
       const builtInMatch = builtInPlatforms.find(platform => cleanHostname.includes(platform));
-      if (builtInMatch) return builtInMatch;
+      if (builtInMatch) {
+        console.log(`Built-in platform detected: ${builtInMatch} from ${url}`);
+        return builtInMatch;
+      }
       
       // Check custom sites
       const { settings } = await chrome.storage.local.get('settings');
       if (settings?.platforms) {
         for (const [domain, config] of Object.entries(settings.platforms)) {
-          if (config.isCustom && cleanHostname.includes(domain)) {
-            return domain;
+          if (config.isCustom) {
+            // More precise domain matching
+            const customDomain = domain.replace(/^www\./, '');
+            if (cleanHostname === customDomain || cleanHostname.endsWith('.' + customDomain)) {
+              console.log(`Custom platform detected: ${domain} from ${url}`);
+              return domain;
+            }
           }
         }
       }

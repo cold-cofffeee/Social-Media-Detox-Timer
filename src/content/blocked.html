@@ -347,11 +347,37 @@
                 this.setupEventListeners();
                 this.loadData();
                 this.showRandomQuote();
+                this.updateContentForReason();
+            }
+
+            updateContentForReason() {
+                const reason = this.getBlockReason();
+                if (reason === 'focus') {
+                    // Update content for focus mode
+                    document.querySelector('h1').textContent = '🎯 Focus Mode Active';
+                    document.querySelector('.subtitle').textContent = 'Social media is blocked during your focus session';
+                    document.querySelector('.message').innerHTML = `
+                        <p>You activated focus mode to stay productive and avoid distractions.</p>
+                        <p>All social media sites are blocked until your focus session ends.</p>
+                        <p><strong>Stay focused and accomplish your goals! 💪</strong></p>
+                    `;
+                    
+                    // Hide emergency override for focus mode (or make it harder to access)
+                    const emergencyBtn = document.getElementById('emergency-override');
+                    if (emergencyBtn) {
+                        emergencyBtn.style.display = 'none';
+                    }
+                }
             }
             
             getPlatformFromURL() {
                 const urlParams = new URLSearchParams(window.location.search);
                 return urlParams.get('platform') || 'Social Media';
+            }
+
+            getBlockReason() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('reason') || 'limit';
             }
             
             setupEventListeners() {
