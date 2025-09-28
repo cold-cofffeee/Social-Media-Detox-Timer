@@ -11,36 +11,27 @@
         <!-- Header -->
         <header class="popup-header">
             <div class="logo">
-                <span class="logo-icon">⏱️</span>
-                <span class="logo-text">Detox Timer</span>
+                <div class="logo-icon">✚</div>
+                <h1 class="logo-text">Detox Timer</h1>
             </div>
             <div class="header-actions">
                 <button id="settings-btn" class="icon-btn" title="Settings">
-                    ⚙️
-                </button>
-                <button id="theme-toggle" class="icon-btn" title="Toggle Dark Mode">
-                    🌙
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
                 </button>
             </div>
         </header>
 
-        <!-- Focus Mode Status -->
-        <div id="focus-status" class="focus-status hidden">
-            <div class="focus-icon">🎯</div>
-            <div class="focus-text">
-                <div class="focus-title">Focus Mode Active</div>
-                <div class="focus-until" id="focus-until">Until 3:30 PM</div>
-            </div>
-            <button id="end-focus" class="focus-end-btn">End</button>
-        </div>
-
-        <!-- Quick Stats Overview -->
+        <!-- Stats Overview -->
         <div class="stats-overview">
             <div class="stat-card">
                 <div class="stat-number" id="total-time-today">0</div>
                 <div class="stat-label">Minutes Today</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card middle">
+                <div class="streak-icon">🔥</div>
                 <div class="stat-number" id="current-streak">0</div>
                 <div class="stat-label">Day Streak</div>
             </div>
@@ -50,43 +41,40 @@
             </div>
         </div>
 
-        <!-- Platform Usage -->
-        <div class="platform-section">
-            <h3 class="section-title">Today's Usage</h3>
+        <!-- Usage Section -->
+        <div class="usage-section">
+            <h2 class="section-title">Today's Usage</h2>
             <div id="platform-list" class="platform-list">
                 <!-- Platforms will be loaded dynamically -->
             </div>
         </div>
 
-        <!-- Quick Actions -->
+        <!-- Focus Goal Section -->
+        <div class="focus-goal-section">
+            <div class="focus-circle">
+                <div class="focus-percentage" id="focus-percentage">30%</div>
+            </div>
+            <div class="focus-info">
+                <h3>Daily Focus Goal</h3>
+                <p class="goal-text">Goal: <span id="goal-minutes">30</span> min</p>
+                <p class="remaining-text" id="remaining-text">+5 min</p>
+            </div>
+        </div>
+
+        <!-- Motivational Message -->
+        <div class="motivational-section">
+            <p id="motivational-message">You're 5 minutes away from breaking yesterday's record!</p>
+        </div>
+
+        <!-- Action Buttons -->
         <div class="actions-section">
             <button id="focus-mode-btn" class="action-btn primary">
-                <span class="btn-icon">🎯</span>
-                <span class="btn-text">Start Focus Mode</span>
+                Pause
             </button>
             <button id="view-progress-btn" class="action-btn secondary">
-                <span class="btn-icon">📊</span>
-                <span class="btn-text">View Progress</span>
+                Open
             </button>
         </div>
-
-        <!-- Rewards Preview -->
-        <div class="rewards-section">
-            <h3 class="section-title">Recent Achievements</h3>
-            <div id="recent-badges" class="badges-container">
-                <!-- Recent badges will be loaded here -->
-            </div>
-            <div class="motivational-message" id="motivational-message">
-                Keep up the great work! 🌟
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <footer class="popup-footer">
-            <div class="footer-text">
-                Stay mindful, stay focused! 💪
-            </div>
-        </footer>
     </div>
 
     <!-- Focus Mode Modal -->

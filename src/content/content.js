@@ -79,65 +79,41 @@ class SocialMediaDetoxContent {
     }
     
     this.timeDisplay.innerHTML = `
-      <!-- Header with drag handle -->
-      <div class="detox-timer-header" id="detox-drag-handle">
-        <div class="detox-timer-brand">
-          <span class="icon">⏱️</span>
-          <span>Detox Timer</span>
+      <!-- Normal Mode -->
+      <div class="detox-timer-normal" id="detox-normal-mode">
+        <div class="detox-timer-header" id="detox-drag-handle">
+          <div class="detox-timer-brand">
+            <span class="icon">⏱️</span>
+            <span>${this.platform.name}</span>
+          </div>
+          <div class="detox-timer-controls">
+            <button id="detox-minimize-btn" class="detox-control-btn" title="Minimize">−</button>
+            <button id="detox-close-btn" class="detox-control-btn" title="Hide">×</button>
+          </div>
         </div>
-        <div class="detox-timer-controls">
-          <button id="detox-minimize-btn" class="detox-control-btn" title="Minimize">➖</button>
-          <button id="detox-close-btn" class="detox-control-btn" title="Hide">✕</button>
+        
+        <div class="detox-timer-content">
+          <div class="detox-time-info">
+            <div class="detox-session-time" id="detox-session-time">0m</div>
+            <div class="detox-session-label">Session Time</div>
+          </div>
+          
+          <div class="detox-daily-progress">
+            <div class="progress-info">
+              <span>Daily: <span id="detox-daily-time">0m / 60m</span></span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="detox-daily-progress" style="width: 0%"></div>
+            </div>
+          </div>
         </div>
       </div>
       
-      <!-- Main Content -->
-      <div class="detox-timer-main">
-        <!-- Time Display -->
-        <div class="detox-time-display">
-          <div class="detox-current-time" id="detox-session-time">0m</div>
-          <div class="detox-platform-name">${this.platform.name} Session</div>
-        </div>
-        
-        <!-- Progress Section -->
-        <div class="detox-progress-section">
-          <div class="detox-progress-label">
-            <span>Daily Progress</span>
-            <span id="detox-daily-time">0m / 60m</span>
-          </div>
-          <div class="detox-progress-bar">
-            <div class="detox-progress-fill" id="detox-daily-progress" style="width: 0%"></div>
-          </div>
-        </div>
-        
-        <!-- Stats Grid -->
-        <div class="detox-stats-grid">
-          <div class="detox-stat-item">
-            <div class="detox-stat-value" id="detox-today-total">0m</div>
-            <div class="detox-stat-label">Today</div>
-          </div>
-          <div class="detox-stat-item">
-            <div class="detox-stat-value" id="detox-session-total">0m</div>
-            <div class="detox-stat-label">Session</div>
-          </div>
-        </div>
-        
-        <!-- Action Buttons -->
-        <div class="detox-actions">
-          <button id="detox-focus-btn" class="detox-action-btn primary">
-            🎯 Focus Mode
-          </button>
-          <button id="detox-break-btn" class="detox-action-btn secondary">
-            ☕ Take Break
-          </button>
-        </div>
-      </div>
-      
-      <!-- Mini Mode (hidden by default) -->
-      <div class="detox-timer-mini" id="detox-mini-mode" title="Click to expand • Right-click to expand • Ctrl+Shift+E to expand">
-        <div class="detox-mini-content">
-          <span id="detox-mini-time">0m</span>
-          <span class="detox-expand-icon">⤢</span>
+      <!-- Mini Mode -->
+      <div class="detox-timer-mini" id="detox-mini-mode">
+        <div class="mini-content">
+          <div class="mini-time" id="detox-mini-time">0m</div>
+          <div class="mini-expand-icon">↗</div>
         </div>
       </div>
     `;
@@ -212,47 +188,31 @@ class SocialMediaDetoxContent {
     this.timeDisplay.addEventListener('click', (e) => {
       const target = e.target;
       
-      if (target.id === 'detox-focus-btn') {
-        this.toggleFocusMode();
-      } else if (target.id === 'detox-minimize-btn') {
+      // Minimize button
+      if (target.id === 'detox-minimize-btn') {
+        e.stopPropagation();
         this.toggleMinimize();
-      } else if (target.id === 'detox-close-btn') {
+        console.log('Minimize button clicked');
+      } 
+      // Close button
+      else if (target.id === 'detox-close-btn') {
+        e.stopPropagation();
         this.hideOverlay();
-      } else if (target.id === 'detox-break-btn') {
-        this.takeBreak();
-      } else if (target.id === 'detox-mini-mode' || target.closest('#detox-mini-mode')) {
-        e.preventDefault();
+      }
+      // Mini mode - expand when clicked
+      else if (target.closest('.detox-timer-mini')) {
         e.stopPropagation();
         this.toggleMinimize();
         console.log('Mini mode clicked - expanding');
       }
     });
 
-    // Add double-click listener for extra reliability
+    // Double-click anywhere on mini mode to expand
     this.timeDisplay.addEventListener('dblclick', (e) => {
       if (this.timeDisplay.classList.contains('minimized')) {
-        e.preventDefault();
         e.stopPropagation();
         this.toggleMinimize();
         console.log('Mini mode double-clicked - expanding');
-      }
-    });
-
-    // Add keyboard shortcut (Ctrl+Shift+E to expand when minimized)
-    document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey && e.shiftKey && e.key === 'E' && this.timeDisplay.classList.contains('minimized')) {
-        e.preventDefault();
-        this.toggleMinimize();
-        console.log('Keyboard shortcut used - expanding');
-      }
-    });
-
-    // Add right-click context for mini mode
-    this.timeDisplay.addEventListener('contextmenu', (e) => {
-      if (this.timeDisplay.classList.contains('minimized')) {
-        e.preventDefault();
-        this.toggleMinimize();
-        console.log('Right-click on mini mode - expanding');
       }
     });
   }

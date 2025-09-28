@@ -10,18 +10,12 @@ class PopupController {
     async init() {
         this.setupEventListeners();
         await this.loadData();
-        this.setupTheme();
     }
 
     setupEventListeners() {
         // Settings button
         document.getElementById('settings-btn').addEventListener('click', () => {
             chrome.runtime.openOptionsPage();
-        });
-
-        // Theme toggle
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            this.toggleTheme();
         });
 
         // Focus mode button
@@ -231,13 +225,13 @@ class PopupController {
         const item = document.createElement('div');
         item.className = 'platform-item';
         
-        const usagePercentage = limit > 0 ? (usageMinutes / limit) : 0;
-        let indicatorClass = 'usage-indicator';
+        const usagePercentage = limit > 0 ? Math.min((usageMinutes / limit) * 100, 100) : 0;
+        let progressClass = 'usage-progress-fill';
         
-        if (usagePercentage >= 1) {
-            indicatorClass += ' danger';
-        } else if (usagePercentage >= 0.75) {
-            indicatorClass += ' warning';
+        if (usagePercentage >= 100) {
+            progressClass += ' danger';
+        } else if (usagePercentage >= 75) {
+            progressClass += ' warning';
         }
 
         const usageText = limit > 0 ? 
@@ -251,7 +245,9 @@ class PopupController {
             </div>
             <div class="platform-usage">
                 <div class="usage-time">${usageText}</div>
-                <div class="${indicatorClass}"></div>
+                <div class="usage-progress">
+                    <div class="${progressClass}" style="width: ${usagePercentage}%"></div>
+                </div>
             </div>
         `;
 
@@ -408,29 +404,7 @@ class PopupController {
         }
     }
 
-    setupTheme() {
-        // Check for saved theme preference or default to light mode
-        const savedTheme = localStorage.getItem('detoxTimerTheme') || 'light';
-        this.setTheme(savedTheme);
-    }
 
-    toggleTheme() {
-        const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        this.setTheme(newTheme);
-    }
-
-    setTheme(theme) {
-        if (theme === 'dark') {
-            document.body.classList.add('dark-mode');
-            document.getElementById('theme-toggle').textContent = '☀️';
-        } else {
-            document.body.classList.remove('dark-mode');
-            document.getElementById('theme-toggle').textContent = '🌙';
-        }
-        
-        localStorage.setItem('detoxTimerTheme', theme);
-    }
 
     showNotification(message, type = 'info') {
         // Create notification element

@@ -5,27 +5,7 @@
   --overlay-bg: #ffffff;
   --overlay-text: #2d3748;
   --overlay-text-secondary: #718096;
-  --overlay-b/* Minimized state */
-#detox-timer-display.minimized {
-  width: 60px;
-  height: 60px;
-}
-
-#detox-timer-display.minimized .detox-timer-normal {
-  display: none;
-}
-
-#detox-timer-display.minimized .detox-timer-mini {
-  display: flex;
-}
-
-#detox-timer-display:not(.minimized) .detox-timer-normal {
-  display: block;
-}
-
-#detox-timer-display:not(.minimized) .detox-timer-mini {
-  display: none;
-}
+  --overlay-border: #e2e8f0;
   --overlay-accent: #68d391;
   --overlay-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   --overlay-mini-bg: #68d391;
@@ -48,9 +28,8 @@
   right: 20px;
   z-index: 999999;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
-  width: 280px;
 }
 
 /* Normal Mode Styles */
@@ -168,14 +147,12 @@
   display: none;
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--overlay-mini-bg);
   border-radius: 50%;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: var(--overlay-shadow);
   cursor: pointer;
   position: relative;
   transition: all 0.3s ease;
-  align-items: center;
-  justify-content: center;
 }
 
 .detox-timer-mini:hover {
