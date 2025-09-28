@@ -134,8 +134,11 @@ class SocialMediaDetoxContent {
       </div>
       
       <!-- Mini Mode (hidden by default) -->
-      <div class="detox-timer-mini" id="detox-mini-mode" title="Click to expand">
-        <span id="detox-mini-time">0m</span>
+      <div class="detox-timer-mini" id="detox-mini-mode" title="Click to expand • Right-click to expand • Ctrl+Shift+E to expand">
+        <div class="detox-mini-content">
+          <span id="detox-mini-time">0m</span>
+          <span class="detox-expand-icon">⤢</span>
+        </div>
       </div>
     `;
     
@@ -217,8 +220,39 @@ class SocialMediaDetoxContent {
         this.hideOverlay();
       } else if (target.id === 'detox-break-btn') {
         this.takeBreak();
-      } else if (target.id === 'detox-mini-mode') {
+      } else if (target.id === 'detox-mini-mode' || target.closest('#detox-mini-mode')) {
+        e.preventDefault();
+        e.stopPropagation();
         this.toggleMinimize();
+        console.log('Mini mode clicked - expanding');
+      }
+    });
+
+    // Add double-click listener for extra reliability
+    this.timeDisplay.addEventListener('dblclick', (e) => {
+      if (this.timeDisplay.classList.contains('minimized')) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.toggleMinimize();
+        console.log('Mini mode double-clicked - expanding');
+      }
+    });
+
+    // Add keyboard shortcut (Ctrl+Shift+E to expand when minimized)
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'E' && this.timeDisplay.classList.contains('minimized')) {
+        e.preventDefault();
+        this.toggleMinimize();
+        console.log('Keyboard shortcut used - expanding');
+      }
+    });
+
+    // Add right-click context for mini mode
+    this.timeDisplay.addEventListener('contextmenu', (e) => {
+      if (this.timeDisplay.classList.contains('minimized')) {
+        e.preventDefault();
+        this.toggleMinimize();
+        console.log('Right-click on mini mode - expanding');
       }
     });
   }

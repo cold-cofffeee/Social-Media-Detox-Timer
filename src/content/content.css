@@ -116,14 +116,36 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 50%;
   color: white;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   position: relative;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .detox-timer-mini:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
+  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+}
+
+.detox-mini-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.detox-expand-icon {
+  font-size: 10px;
+  opacity: 0.8;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; transform: scale(1.1); }
 }
 
 .detox-timer-mini::before {
@@ -137,6 +159,28 @@
   background: linear-gradient(45deg, #667eea, #a78bfa, #667eea);
   z-index: -1;
   animation: rotate 3s linear infinite;
+}
+
+.detox-timer-mini::after {
+  content: '👆 Click me';
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.detox-timer-mini:hover::after {
+  opacity: 1;
+  bottom: -30px;
 }
 
 @keyframes rotate {

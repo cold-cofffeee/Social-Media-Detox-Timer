@@ -43,12 +43,16 @@ class DetoxTimer {
       const result = await chrome.storage.local.get(['settings', 'stats']);
       
       if (!result.settings) {
+        console.log('Initializing default settings');
         await chrome.storage.local.set({ settings: defaultSettings });
       }
       
       if (!result.stats) {
+        console.log('Initializing default stats');
         await chrome.storage.local.set({ stats: defaultStats });
       }
+      
+      console.log('Storage initialized successfully');
     } catch (error) {
       console.error('Error initializing storage:', error);
     }
@@ -117,19 +121,28 @@ class DetoxTimer {
   }
 
   async handleTabUpdate(tabId, url) {
+    console.log(`Tab update: ${url} (tab ${tabId})`);
     const platform = await this.extractPlatform(url);
-    if (!platform) return;
+    console.log(`Extracted platform: ${platform}`);
+    
+    if (!platform) {
+      console.log('No platform detected, skipping tracking');
+      return;
+    }
 
     const { settings } = await chrome.storage.local.get('settings');
     
     if (settings.platforms[platform]?.enabled) {
-      console.log(`Tracking started for ${platform} (tab ${tabId})`);
+      console.log(`Platform enabled: ${platform}. Starting tracking for tab ${tabId}`);
       await this.startTracking(tabId, platform);
       
       // Check if in focus mode
       if (settings.focusMode && new Date() < new Date(settings.focusUntil)) {
+        console.log(`Focus mode active, blocking ${platform}`);
         this.blockSite(tabId, platform);
       }
+    } else {
+      console.log(`Platform disabled or not found in settings: ${platform}`);
     }
   }
 
@@ -145,9 +158,11 @@ class DetoxTimer {
 
   async handleMessage(message, sender, sendResponse) {
     try {
+      console.log('Received message:', message.action);
       switch (message.action) {
         case 'getUsageStats':
           const stats = await this.getUsageStats();
+          console.log('Sending stats:', stats);
           sendResponse({ success: true, data: stats });
           break;
           
@@ -199,16 +214,6 @@ class DetoxTimer {
           sendResponse({ success: true });
           break;
           
-        case 'addCustomSite':
-          await this.addCustomSite(message.site);
-          sendResponse({ success: true });
-          break;
-          
-        case 'removeCustomSite':
-          await this.removeCustomSite(message.domain);
-          sendResponse({ success: true });
-          break;
-          
         default:
           sendResponse({ success: false, error: 'Unknown action' });
       }
@@ -219,6 +224,7 @@ class DetoxTimer {
   }
 
   async startTracking(tabId, platform) {
+    console.log(`Starting tracking for ${platform} (tab ${tabId})`);
     const { stats } = await chrome.storage.local.get('stats');
     
     // Initialize usage tracking
@@ -232,6 +238,7 @@ class DetoxTimer {
 
     // Start timer
     chrome.alarms.create(`track_${tabId}_${platform}`, { periodInMinutes: 1/60 }); // Every second
+    console.log(`Created alarm: track_${tabId}_${platform}`);
     
     await chrome.storage.local.set({ stats });
   }
@@ -272,6 +279,8 @@ class DetoxTimer {
       // Increment usage
       stats.sessionUsage[platform] = (stats.sessionUsage[platform] || 0) + 1;
       stats.dailyUsage[platform] = (stats.dailyUsage[platform] || 0) + 1;
+      
+      console.log(`Usage incremented for ${platform}: session=${stats.sessionUsage[platform]}s, daily=${stats.dailyUsage[platform]}s`);
       
       await chrome.storage.local.set({ stats });
       

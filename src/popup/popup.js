@@ -93,25 +93,33 @@ class PopupController {
 
     async loadData() {
         try {
+            console.log('Loading popup data...');
             // Load usage statistics
             const statsResponse = await chrome.runtime.sendMessage({
                 action: 'getUsageStats'
             });
+            console.log('Stats response:', statsResponse);
 
             // Load settings
             const settingsResponse = await chrome.runtime.sendMessage({
                 action: 'getSettings'
             });
+            console.log('Settings response:', settingsResponse);
 
             if (statsResponse.success && settingsResponse.success) {
                 const stats = statsResponse.data;
                 const settings = settingsResponse.data;
+                
+                console.log('Loaded stats:', stats);
+                console.log('Loaded settings:', settings);
                 
                 this.updateOverviewStats(stats);
                 this.updatePlatformList(stats, settings);
                 this.updateFocusStatus(settings);
                 this.updateRecentBadges(stats);
                 this.showMotivationalMessage();
+            } else {
+                console.error('Failed to load data:', { statsResponse, settingsResponse });
             }
         } catch (error) {
             console.error('Error loading data:', error);
@@ -122,16 +130,27 @@ class PopupController {
         // Calculate total time today
         const totalTimeToday = Object.values(stats.dailyUsage || {})
             .reduce((sum, time) => sum + time, 0);
-        document.getElementById('total-time-today').textContent = 
-            Math.floor(totalTimeToday / 60);
+        
+        console.log('Daily usage raw:', stats.dailyUsage);
+        console.log('Total time today (seconds):', totalTimeToday);
+        console.log('Total time today (minutes):', Math.floor(totalTimeToday / 60));
+        
+        const totalTimeTodayElement = document.getElementById('total-time-today');
+        if (totalTimeTodayElement) {
+            totalTimeTodayElement.textContent = Math.floor(totalTimeToday / 60);
+        }
 
         // Update streak
-        document.getElementById('current-streak').textContent = 
-            stats.currentStreak || 0;
+        const streakElement = document.getElementById('current-streak');
+        if (streakElement) {
+            streakElement.textContent = stats.currentStreak || 0;
+        }
 
         // Update points
-        document.getElementById('total-points').textContent = 
-            stats.totalPoints || 0;
+        const pointsElement = document.getElementById('total-points');
+        if (pointsElement) {
+            pointsElement.textContent = stats.totalPoints || 0;
+        }
     }
 
     updatePlatformList(stats, settings) {
