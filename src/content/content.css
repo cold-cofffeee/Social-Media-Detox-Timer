@@ -1,0 +1,699 @@
+/* Social Media Detox Timer - Modern Draggable Overlay */
+
+#detox-timer-display {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  border: none;
+  border-radius: 20px;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 999999;
+  min-width: 280px;
+  max-width: 320px;
+  cursor: move;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+#detox-timer-display:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px) scale(1.02);
+}
+
+#detox-timer-display.dragging {
+  transform: rotate(2deg) scale(1.05);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  z-index: 9999999;
+}
+
+#detox-timer-display.minimized {
+  min-width: 60px;
+  max-width: 60px;
+  border-radius: 50%;
+  padding: 0;
+}
+
+#detox-timer-display.minimized .detox-timer-main {
+  display: none;
+}
+
+#detox-timer-display.minimized .detox-timer-mini {
+  display: flex !important;
+}
+
+/* Header with drag handle */
+.detox-timer-header {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: move;
+  border-radius: 20px 20px 0 0;
+}
+
+.detox-timer-header:hover {
+  background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+}
+
+.detox-timer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-weight: 600;
+}
+
+.detox-timer-brand .icon {
+  font-size: 20px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.detox-timer-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.detox-control-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 12px;
+}
+
+.detox-control-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+/* Main Content */
+.detox-timer-main {
+  padding: 20px;
+}
+
+/* Mini Mode */
+.detox-timer-mini {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+}
+
+.detox-timer-mini:hover {
+  transform: scale(1.1);
+}
+
+.detox-timer-mini::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #4CAF50, #81C784, #4CAF50);
+  z-index: -1;
+  animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Time Display */
+.detox-time-display {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.detox-current-time {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2e7d32;
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.detox-platform-name {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Progress Bar */
+.detox-progress-section {
+  margin-bottom: 20px;
+}
+
+.detox-progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.detox-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e8f5e8;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.detox-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50 0%, #81C784 100%);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.detox-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Stats Grid */
+.detox-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.detox-stat-item {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+}
+
+.detox-stat-item:hover {
+  border-color: #4CAF50;
+  background: #f1f8e9;
+}
+
+.detox-stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 4px;
+}
+
+.detox-stat-label {
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Action Buttons */
+.detox-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.detox-action-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.detox-action-btn.primary {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+}
+
+.detox-action-btn.primary:hover {
+  background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.detox-action-btn.secondary {
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #e9ecef;
+}
+
+.detox-action-btn.secondary:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #detox-timer-display {
+    min-width: 260px;
+    max-width: 280px;
+    top: 10px;
+    right: 10px;
+  }
+  
+  .detox-timer-header {
+    padding: 12px 16px;
+  }
+  
+  .detox-timer-main {
+    padding: 16px;
+  }
+  
+  .detox-current-time {
+    font-size: 28px;
+  }
+  
+  .detox-stats-grid {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  #detox-timer-display {
+    min-width: 240px;
+    max-width: 260px;
+    top: 5px;
+    right: 5px;
+  }
+  
+  .detox-current-time {
+    font-size: 24px;
+  }
+}
+
+/* Animation Classes */
+.detox-fade-in {
+  animation: detoxFadeIn 0.3s ease-out;
+}
+
+@keyframes detoxFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.detox-pulse {
+  animation: detoxPulse 2s ease-in-out infinite;
+}
+
+@keyframes detoxPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Legacy styles cleanup completed */
+
+.detox-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.detox-timer-progress {
+  margin-top: 8px;
+}
+
+.detox-progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.detox-progress-fill {
+  height: 100%;
+  background-color: #4CAF50;
+  border-radius: 3px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  width: 0%;
+}
+
+.detox-progress-fill.warning {
+  background-color: #FF9800;
+}
+
+.detox-progress-fill.danger {
+  background-color: #f44336;
+}
+
+.detox-progress-text {
+  font-size: 11px;
+  color: #888;
+  text-align: center;
+}
+
+/* Usage state styles */
+#detox-timer-display.usage-low {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+#detox-timer-display.usage-medium {
+  border-color: #FF9800;
+  background: rgba(255, 152, 0, 0.1);
+}
+
+#detox-timer-display.usage-high {
+  border-color: #FF5722;
+  background: rgba(255, 87, 34, 0.1);
+}
+
+#detox-timer-display.usage-exceeded {
+  border-color: #f44336;
+  background: rgba(244, 67, 54, 0.15);
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Warning overlay */
+.detox-warning-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000000;
+  animation: fadeIn 0.3s ease;
+}
+
+.detox-warning-content {
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.detox-warning-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.detox-warning-message {
+  font-size: 18px;
+  margin-bottom: 24px;
+  color: #333;
+  line-height: 1.4;
+}
+
+.detox-warning-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.detox-btn-primary {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.detox-btn-primary:hover {
+  background-color: #45a049;
+}
+
+.detox-btn-secondary {
+  background-color: transparent;
+  color: #666;
+  border: 2px solid #ddd;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.detox-btn-secondary:hover {
+  border-color: #4CAF50;
+  color: #4CAF50;
+}
+
+/* Focus mode dialog */
+.detox-focus-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000000;
+  animation: fadeIn 0.3s ease;
+}
+
+.detox-focus-content {
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 450px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.detox-focus-content h3 {
+  margin: 0 0 16px 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.detox-focus-content p {
+  margin: 0 0 20px 0;
+  color: #666;
+  font-size: 16px;
+}
+
+.detox-focus-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.detox-focus-option {
+  padding: 16px 24px;
+  background-color: #f5f5f5;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.detox-focus-option:hover {
+  background-color: #4CAF50;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.detox-focus-actions {
+  margin-top: 20px;
+}
+
+/* Focus notification */
+.detox-focus-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1000000;
+  animation: slideDown 0.5s ease;
+}
+
+.detox-focus-notification-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detox-focus-notification-icon {
+  font-size: 24px;
+}
+
+.detox-focus-notification-text {
+  line-height: 1.4;
+}
+
+/* Motivational message */
+.detox-motivational-message {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+  color: #333;
+  padding: 16px 24px;
+  border-radius: 25px;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 999999;
+  animation: bounceIn 0.6s ease;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.05);
+  }
+  70% {
+    transform: translateX(-50%) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  #detox-timer-display {
+    background: rgba(40, 40, 40, 0.95);
+    border-color: #4CAF50;
+    color: white;
+  }
+  
+  #detox-timer-display.usage-low {
+    background: rgba(76, 175, 80, 0.2);
+  }
+  
+  #detox-timer-display.usage-medium {
+    background: rgba(255, 152, 0, 0.2);
+  }
+  
+  #detox-timer-display.usage-high {
+    background: rgba(255, 87, 34, 0.2);
+  }
+  
+  #detox-timer-display.usage-exceeded {
+    background: rgba(244, 67, 54, 0.2);
+  }
+  
+  .detox-timer-platform {
+    color: #fff;
+  }
+  
+  .detox-timer-session {
+    color: #ccc;
+  }
+  
+  .detox-warning-content,
+  .detox-focus-content {
+    background: #333;
+    color: white;
+  }
+  
+  .detox-focus-option {
+    background-color: #555;
+    color: white;
+  }
+  
+  .detox-focus-option:hover {
+    background-color: #4CAF50;
+  }
+}

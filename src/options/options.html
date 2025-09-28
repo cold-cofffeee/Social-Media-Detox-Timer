@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Detox Timer - Settings</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+<body>
+    <div class="options-container">
+        <!-- Header -->
+        <header class="options-header">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">⏱️</span>
+                    <h1>Social Media Detox Timer</h1>
+                </div>
+                <div class="header-actions">
+                    <button id="export-data" class="header-btn">📊 Export Data</button>
+                    <button id="reset-data" class="header-btn danger">🔄 Reset All</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="platforms">🌐 Platforms</button>
+            <button class="nav-tab" data-tab="limits">⏰ Time Limits</button>
+            <button class="nav-tab" data-tab="rewards">🏆 Rewards</button>
+            <button class="nav-tab" data-tab="stats">📊 Statistics</button>
+            <button class="nav-tab" data-tab="settings">⚙️ Settings</button>
+        </nav>
+
+        <!-- Tab Content -->
+        <main class="tab-content">
+            
+            <!-- Platforms Tab -->
+            <div id="platforms-tab" class="tab-pane active">
+                <div class="section-header">
+                    <h2>📱 Platform Configuration</h2>
+                    <p>Enable or disable tracking for different social media platforms</p>
+                </div>
+
+                <div class="platforms-grid">
+                    <div class="platform-card" data-platform="facebook.com">
+                        <div class="platform-info">
+                            <div class="platform-icon">📘</div>
+                            <div class="platform-details">
+                                <h3>Facebook</h3>
+                                <p>facebook.com</p>
+                            </div>
+                        </div>
+                        <div class="platform-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="platform-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="platform-card" data-platform="instagram.com">
+                        <div class="platform-info">
+                            <div class="platform-icon">📷</div>
+                            <div class="platform-details">
+                                <h3>Instagram</h3>
+                                <p>instagram.com</p>
+                            </div>
+                        </div>
+                        <div class="platform-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="platform-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="platform-card" data-platform="twitter.com">
+                        <div class="platform-info">
+                            <div class="platform-icon">🐦</div>
+                            <div class="platform-details">
+                                <h3>Twitter</h3>
+                                <p>twitter.com</p>
+                            </div>
+                        </div>
+                        <div class="platform-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="platform-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="platform-card" data-platform="x.com">
+                        <div class="platform-info">
+                            <div class="platform-icon">❌</div>
+                            <div class="platform-details">
+                                <h3>X (Twitter)</h3>
+                                <p>x.com</p>
+                            </div>
+                        </div>
+                        <div class="platform-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="platform-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="platform-card" data-platform="tiktok.com">
+                        <div class="platform-info">
+                            <div class="platform-icon">🎵</div>
+                            <div class="platform-details">
+                                <h3>TikTok</h3>
+                                <p>tiktok.com</p>
+                            </div>
+                        </div>
+                        <div class="platform-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="platform-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="platform-card" data-platform="linkedin.com">
+                        <div class="platform-info">
+                            <div class="platform-icon">💼</div>
+                            <div class="platform-details">
+                                <h3>LinkedIn</h3>
+                                <p>linkedin.com</p>
+                            </div>
+                        </div>
+                        <div class="platform-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="platform-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="platform-card" data-platform="reddit.com">
+                        <div class="platform-info">
+                            <div class="platform-icon">🤖</div>
+                            <div class="platform-details">
+                                <h3>Reddit</h3>
+                                <p>reddit.com</p>
+                            </div>
+                        </div>
+                        <div class="platform-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="platform-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="platform-card" data-platform="youtube.com">
+                        <div class="platform-info">
+                            <div class="platform-icon">📺</div>
+                            <div class="platform-details">
+                                <h3>YouTube</h3>
+                                <p>youtube.com</p>
+                            </div>
+                        </div>
+                        <div class="platform-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="platform-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="platform-card" data-platform="pinterest.com">
+                        <div class="platform-info">
+                            <div class="platform-icon">📌</div>
+                            <div class="platform-details">
+                                <h3>Pinterest</h3>
+                                <p>pinterest.com</p>
+                            </div>
+                        </div>
+                        <div class="platform-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="platform-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Sites Section -->
+                <div class="section-header" style="margin-top: 40px;">
+                    <h2>🌐 Custom Sites</h2>
+                    <p>Add your own websites to track and monitor</p>
+                </div>
+
+                <div class="custom-sites-container">
+                    <div class="add-site-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="site-name">Site Name</label>
+                                <input type="text" id="site-name" placeholder="e.g., My Forum">
+                            </div>
+                            <div class="form-group">
+                                <label for="site-domain">Domain</label>
+                                <input type="text" id="site-domain" placeholder="e.g., example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="site-icon">Icon (emoji)</label>
+                                <input type="text" id="site-icon" placeholder="🌐" maxlength="2">
+                            </div>
+                            <div class="form-group">
+                                <label for="site-daily-limit">Daily Limit (minutes)</label>
+                                <input type="number" id="site-daily-limit" value="60" min="1" max="1440">
+                            </div>
+                        </div>
+                        <button id="add-custom-site" class="add-site-btn">
+                            ➕ Add Custom Site
+                        </button>
+                    </div>
+
+                    <div id="custom-sites-list" class="custom-sites-list">
+                        <!-- Custom sites will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Limits Tab -->
+            <div id="limits-tab" class="tab-pane">
+                <div class="section-header">
+                    <h2>⏰ Time Limits</h2>
+                    <p>Set daily and session time limits for each platform</p>
+                </div>
+
+                <div class="limits-container">
+                    <div class="limits-presets">
+                        <h3>🎯 Quick Presets</h3>
+                        <div class="preset-buttons">
+                            <button class="preset-btn" data-preset="minimal">Minimal (15-30m)</button>
+                            <button class="preset-btn" data-preset="balanced">Balanced (30-60m)</button>
+                            <button class="preset-btn" data-preset="relaxed">Relaxed (60-120m)</button>
+                            <button class="preset-btn" data-preset="custom">Custom</button>
+                        </div>
+                    </div>
+
+                    <div class="limits-grid" id="limits-grid">
+                        <!-- Platform limit cards will be generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rewards Tab -->
+            <div id="rewards-tab" class="tab-pane">
+                <div class="section-header">
+                    <h2>🏆 Rewards & Achievements</h2>
+                    <p>Track your progress and unlock badges</p>
+                </div>
+
+                <div class="rewards-content">
+                    <div class="current-stats">
+                        <div class="stat-card large">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="total-points-display">0</div>
+                                <div class="stat-label">Total Points</div>
+                            </div>
+                        </div>
+                        <div class="stat-card large">
+                            <div class="stat-icon">🔥</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="current-streak-display">0</div>
+                                <div class="stat-label">Current Streak</div>
+                            </div>
+                        </div>
+                        <div class="stat-card large">
+                            <div class="stat-icon">🏅</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="badges-count-display">0</div>
+                                <div class="stat-label">Badges Earned</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="badges-section">
+                        <h3>🏅 Your Badges</h3>
+                        <div class="badges-grid" id="badges-grid">
+                            <!-- Badges will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="achievements-section">
+                        <h3>🎖️ Available Achievements</h3>
+                        <div class="achievements-list" id="achievements-list">
+                            <!-- Available achievements will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Tab -->
+            <div id="stats-tab" class="tab-pane">
+                <div class="section-header">
+                    <h2>📊 Usage Statistics</h2>
+                    <p>Detailed insights into your social media usage</p>
+                </div>
+
+                <div class="stats-content">
+                    <div class="stats-period-selector">
+                        <button class="period-btn active" data-period="today">Today</button>
+                        <button class="period-btn" data-period="week">This Week</button>
+                        <button class="period-btn" data-period="month">This Month</button>
+                        <button class="period-btn" data-period="all">All Time</button>
+                    </div>
+
+                    <div class="stats-overview">
+                        <div class="overview-card">
+                            <h4>📱 Most Used Platform</h4>
+                            <div class="overview-value" id="most-used-platform">Facebook</div>
+                            <div class="overview-subtext" id="most-used-time">45 minutes</div>
+                        </div>
+                        <div class="overview-card">
+                            <h4>⏰ Average Daily Usage</h4>
+                            <div class="overview-value" id="average-usage">32 min</div>
+                            <div class="overview-subtext">Across all platforms</div>
+                        </div>
+                        <div class="overview-card">
+                            <h4>🎯 Goals Met</h4>
+                            <div class="overview-value" id="goals-met">7/10</div>
+                            <div class="overview-subtext">Days this month</div>
+                        </div>
+                        <div class="overview-card">
+                            <h4>💪 Best Streak</h4>
+                            <div class="overview-value" id="best-streak">12 days</div>
+                            <div class="overview-subtext">Personal record</div>
+                        </div>
+                    </div>
+
+                    <div class="stats-charts">
+                        <div class="chart-container">
+                            <h4>📈 Daily Usage Trend</h4>
+                            <div class="chart-placeholder">
+                                <div class="chart-bars" id="usage-chart">
+                                    <!-- Usage chart will be generated here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="platform-breakdown">
+                            <h4>📊 Platform Breakdown</h4>
+                            <div class="breakdown-list" id="platform-breakdown">
+                                <!-- Platform breakdown will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-pane">
+                <div class="section-header">
+                    <h2>⚙️ General Settings</h2>
+                    <p>Customize your detox experience</p>
+                </div>
+
+                <div class="settings-content">
+                    <div class="settings-section">
+                        <h3>🎨 Appearance</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label>Dark Mode</label>
+                                <p>Switch to a darker theme for better night viewing</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="dark-mode-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>🔔 Notifications</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label>Enable Notifications</label>
+                                <p>Receive alerts for time limits and achievements</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notifications-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label>Motivational Messages</label>
+                                <p>Show encouraging messages throughout the day</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="motivational-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>🚨 Emergency Options</h3>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <label>Emergency Override Available</label>
+                                <p>Allow temporary override of limits for emergencies</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="emergency-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>📊 Data Management</h3>
+                        <div class="data-actions">
+                            <button class="action-btn" id="export-stats">
+                                📤 Export Statistics
+                            </button>
+                            <button class="action-btn" id="import-settings">
+                                📥 Import Settings
+                            </button>
+                            <button class="action-btn danger" id="clear-history">
+                                🗑️ Clear Usage History
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="options-footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>Social Media Detox Timer v1.0.0</p>
+                    <p>Building healthier digital habits, one day at a time 🌱</p>
+                </div>
+                <div class="footer-actions">
+                    <button id="save-settings" class="save-btn">💾 Save All Settings</button>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="options.js"></script>
+</body>
+</html>

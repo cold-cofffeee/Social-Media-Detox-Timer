@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Detox Timer</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <!-- Header -->
+        <header class="popup-header">
+            <div class="logo">
+                <span class="logo-icon">⏱️</span>
+                <span class="logo-text">Detox Timer</span>
+            </div>
+            <div class="header-actions">
+                <button id="settings-btn" class="icon-btn" title="Settings">
+                    ⚙️
+                </button>
+                <button id="theme-toggle" class="icon-btn" title="Toggle Dark Mode">
+                    🌙
+                </button>
+            </div>
+        </header>
+
+        <!-- Focus Mode Status -->
+        <div id="focus-status" class="focus-status hidden">
+            <div class="focus-icon">🎯</div>
+            <div class="focus-text">
+                <div class="focus-title">Focus Mode Active</div>
+                <div class="focus-until" id="focus-until">Until 3:30 PM</div>
+            </div>
+            <button id="end-focus" class="focus-end-btn">End</button>
+        </div>
+
+        <!-- Quick Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-number" id="total-time-today">0</div>
+                <div class="stat-label">Minutes Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="current-streak">0</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-points">0</div>
+                <div class="stat-label">Points</div>
+            </div>
+        </div>
+
+        <!-- Platform Usage -->
+        <div class="platform-section">
+            <h3 class="section-title">Today's Usage</h3>
+            <div id="platform-list" class="platform-list">
+                <!-- Platforms will be loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="actions-section">
+            <button id="focus-mode-btn" class="action-btn primary">
+                <span class="btn-icon">🎯</span>
+                <span class="btn-text">Start Focus Mode</span>
+            </button>
+            <button id="view-progress-btn" class="action-btn secondary">
+                <span class="btn-icon">📊</span>
+                <span class="btn-text">View Progress</span>
+            </button>
+        </div>
+
+        <!-- Rewards Preview -->
+        <div class="rewards-section">
+            <h3 class="section-title">Recent Achievements</h3>
+            <div id="recent-badges" class="badges-container">
+                <!-- Recent badges will be loaded here -->
+            </div>
+            <div class="motivational-message" id="motivational-message">
+                Keep up the great work! 🌟
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="popup-footer">
+            <div class="footer-text">
+                Stay mindful, stay focused! 💪
+            </div>
+        </footer>
+    </div>
+
+    <!-- Focus Mode Modal -->
+    <div id="focus-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🎯 Start Focus Mode</h3>
+                <button id="close-modal" class="close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Block all social media sites for:</p>
+                <div class="focus-duration-options">
+                    <button class="duration-btn" data-duration="15">15 min</button>
+                    <button class="duration-btn" data-duration="30">30 min</button>
+                    <button class="duration-btn" data-duration="60">1 hour</button>
+                    <button class="duration-btn" data-duration="120">2 hours</button>
+                    <button class="duration-btn" data-duration="240">4 hours</button>
+                </div>
+                <div class="custom-duration">
+                    <label for="custom-duration-input">Custom (minutes):</label>
+                    <input type="number" id="custom-duration-input" min="1" max="1440" placeholder="60">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="start-focus" class="btn btn-primary">Start Focus Mode</button>
+                <button id="cancel-focus" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

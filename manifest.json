@@ -1,0 +1,100 @@
+{
+  "manifest_version": 3,
+  "name": "Social Media Detox Timer",
+  "version": "1.0.0",
+  "description": "Limit time on social media platforms and reward progress with gamification",
+  
+  "permissions": [
+    "storage",
+    "activeTab",
+    "notifications",
+    "alarms",
+    "tabs"
+  ],
+  
+  "host_permissions": [
+    "*://www.facebook.com/*",
+    "*://facebook.com/*",
+    "*://www.instagram.com/*",
+    "*://instagram.com/*",
+    "*://twitter.com/*",
+    "*://www.twitter.com/*",
+    "*://x.com/*",
+    "*://www.x.com/*",
+    "*://www.tiktok.com/*",
+    "*://tiktok.com/*",
+    "*://www.linkedin.com/*",
+    "*://linkedin.com/*",
+    "*://www.reddit.com/*",
+    "*://reddit.com/*",
+    "*://www.youtube.com/*",
+    "*://youtube.com/*",
+    "*://www.snapchat.com/*",
+    "*://snapchat.com/*",
+    "*://www.pinterest.com/*",
+    "*://pinterest.com/*"
+  ],
+  
+  "background": {
+    "service_worker": "src/background/background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "*://www.facebook.com/*",
+        "*://facebook.com/*",
+        "*://www.instagram.com/*",
+        "*://instagram.com/*",
+        "*://twitter.com/*",
+        "*://www.twitter.com/*",
+        "*://x.com/*",
+        "*://www.x.com/*",
+        "*://www.tiktok.com/*",
+        "*://tiktok.com/*",
+        "*://www.linkedin.com/*",
+        "*://linkedin.com/*",
+        "*://www.reddit.com/*",
+        "*://reddit.com/*",
+        "*://www.youtube.com/*",
+        "*://youtube.com/*",
+        "*://www.snapchat.com/*",
+        "*://snapchat.com/*",
+        "*://www.pinterest.com/*",
+        "*://pinterest.com/*"
+      ],
+      "js": ["src/content/content.js"],
+      "css": ["src/content/content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "Social Media Detox Timer",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  
+  "options_page": "src/options/options.html",
+  
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/content/overlay.html",
+        "src/content/blocked.html",
+        "icons/*"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
