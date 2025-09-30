@@ -36,6 +36,10 @@
     "*://pinterest.com/*"
   ],
   
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  
   "background": {
     "service_worker": "src/background/background.js"
   },

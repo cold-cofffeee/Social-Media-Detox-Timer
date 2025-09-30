@@ -7,7 +7,22 @@
 }
 
 :root {
-    /* Fixed Dark theme colors */
+    /* Light theme colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --text-muted: #a0aec0;
+    --border-color: #e2e8f0;
+    --accent-green: #68d391;
+    --accent-blue: #4299e1;
+    --accent-red: #f56565;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+    /* Dark theme colors */
     --bg-primary: #1a202c;
     --bg-secondary: #2d3748;
     --text-primary: #f7fafc;
@@ -22,9 +37,9 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     width: 450px;
     min-width: 450px;
     min-height: 600px;
@@ -47,9 +62,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .logo {
@@ -61,7 +74,7 @@ body {
 .logo-icon {
     width: 40px;
     height: 40px;
-    background: #68d391;
+    background: var(--accent-green);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -74,7 +87,7 @@ body {
 .logo-text {
     font-size: 22px;
     font-weight: 600;
-    color: white;
+    color: var(--text-primary);
 }
 
 .header-actions {
@@ -92,62 +105,69 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
     transition: all 0.2s ease;
 }
 
 .icon-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    transform: scale(1.05);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
 }
 
 /* Stats Overview */
 .stats-overview {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    padding: 24px 20px;
-    background: transparent;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    padding: 24px;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    padding: 20px 16px;
-    border-radius: 20px;
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-    min-height: 90px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-.stat-card:hover {
-    background: rgba(255, 255, 255, 1);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
-    border-color: rgba(102, 126, 234, 0.3);
+.stat-card.middle {
+    position: relative;
+}
+
+.stat-card.middle::before,
+.stat-card.middle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 1px;
+    height: 40px;
+    background: var(--border-color);
+    transform: translateY(-50%);
+}
+
+.stat-card.middle::before {
+    left: -12px;
+}
+
+.stat-card.middle::after {
+    right: -12px;
+}
+
+.streak-icon {
+    font-size: 24px;
+    margin-bottom: 4px;
 }
 
 .stat-number {
     font-size: 28px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 4px;
 }
 
 .stat-label {
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-secondary);
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: 0.5px;
 }
 
@@ -367,7 +387,7 @@ body {
     background: var(--bg-primary);
     border-radius: 16px;
     width: 90%;
-    max-width: 500px;
+    max-width: 400px;
     box-shadow: var(--shadow-lg);
     overflow: hidden;
 }
@@ -513,4 +533,21 @@ body {
     display: none !important;
 }
 
-/* Responsive adjustments removed - fixed width popup */
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    body {
+        width: 100%;
+        min-width: 380px;
+    }
+    
+    .stats-overview {
+        padding: 20px;
+    }
+    
+    .usage-section,
+    .focus-goal-section,
+    .motivational-section,
+    .actions-section {
+        padding: 20px;
+    }
+}

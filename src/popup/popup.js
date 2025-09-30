@@ -88,21 +88,35 @@ class PopupController {
     async loadData() {
         try {
             console.log('Loading popup data...');
+            
+            // Check if chrome.runtime is available
+            if (!chrome.runtime) {
+                console.error('Chrome runtime not available');
+                this.showErrorState();
+                return;
+            }
+
             // Load usage statistics
             const statsResponse = await chrome.runtime.sendMessage({
                 action: 'getUsageStats'
+            }).catch(error => {
+                console.error('Failed to get usage stats:', error);
+                return { success: false, error: error.message };
             });
             console.log('Stats response:', statsResponse);
 
             // Load settings
             const settingsResponse = await chrome.runtime.sendMessage({
                 action: 'getSettings'
+            }).catch(error => {
+                console.error('Failed to get settings:', error);
+                return { success: false, error: error.message };
             });
             console.log('Settings response:', settingsResponse);
 
-            if (statsResponse.success && settingsResponse.success) {
-                const stats = statsResponse.data;
-                const settings = settingsResponse.data;
+            if (statsResponse?.success && settingsResponse?.success) {
+                const stats = statsResponse.data || {};
+                const settings = settingsResponse.data || {};
                 
                 console.log('Loaded stats:', stats);
                 console.log('Loaded settings:', settings);
@@ -114,9 +128,26 @@ class PopupController {
                 this.showMotivationalMessage();
             } else {
                 console.error('Failed to load data:', { statsResponse, settingsResponse });
+                this.showErrorState();
             }
         } catch (error) {
             console.error('Error loading data:', error);
+            this.showErrorState();
+        }
+    }
+
+    showErrorState() {
+        const platformList = document.getElementById('platform-list');
+        if (platformList) {
+            platformList.innerHTML = `
+                <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                    <div style="font-size: 32px; margin-bottom: 12px;">⚠️</div>
+                    <div>Unable to load extension data</div>
+                    <div style="font-size: 12px; margin-top: 8px;">
+                        Please refresh or restart the extension
+                    </div>
+                </div>
+            `;
         }
     }
 
@@ -258,43 +289,60 @@ class PopupController {
         const focusStatus = document.getElementById('focus-status');
         const focusBtn = document.getElementById('focus-mode-btn');
 
+        // Check if elements exist before using them
+        if (!focusBtn) {
+            console.warn('Focus button not found');
+            return;
+        }
+
         if (settings.focusMode && settings.focusUntil) {
             const focusUntil = new Date(settings.focusUntil);
             const now = new Date();
             
             if (focusUntil > now) {
                 // Focus mode is active
-                focusStatus.classList.remove('hidden');
-                document.getElementById('focus-until').textContent = 
-                    `Until ${focusUntil.toLocaleTimeString()}`;
+                if (focusStatus) {
+                    focusStatus.classList.remove('hidden');
+                    const focusUntilElement = document.getElementById('focus-until');
+                    if (focusUntilElement) {
+                        focusUntilElement.textContent = `Until ${focusUntil.toLocaleTimeString()}`;
+                    }
+                }
                 
-                focusBtn.innerHTML = `
-                    <span class="btn-icon">🔓</span>
-                    <span class="btn-text">End Focus Mode</span>
-                `;
+                focusBtn.innerHTML = `End Focus Mode`;
                 focusBtn.onclick = () => this.endFocusMode();
             } else {
                 // Focus mode expired
-                focusStatus.classList.add('hidden');
+                if (focusStatus) {
+                    focusStatus.classList.add('hidden');
+                }
                 this.resetFocusButton();
             }
         } else {
-            focusStatus.classList.add('hidden');
+            if (focusStatus) {
+                focusStatus.classList.add('hidden');
+            }
             this.resetFocusButton();
         }
     }
 
     resetFocusButton() {
         const focusBtn = document.getElementById('focus-mode-btn');
-        focusBtn.innerHTML = `
-            <span class="btn-icon">🎯</span>
-            <span class="btn-text">Start Focus Mode</span>
-        `;
+        if (!focusBtn) {
+            console.warn('Focus button not found');
+            return;
+        }
+        focusBtn.innerHTML = `Start Focus Mode`;
         focusBtn.onclick = () => this.showFocusModal();
     }
 
     updateRecentBadges(stats) {
         const badgesContainer = document.getElementById('recent-badges');
+        if (!badgesContainer) {
+            // Element doesn't exist in current HTML, skip badge updates
+            return;
+        }
+        
         badgesContainer.innerHTML = '';
 
         const badges = stats.badges || [];

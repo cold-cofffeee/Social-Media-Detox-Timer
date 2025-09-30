@@ -375,10 +375,14 @@ class DetoxTimer {
       // Show end notification
       chrome.notifications.create({
         type: 'basic',
-        iconUrl: 'icons/icon48.png',
+        iconUrl: chrome.runtime.getURL('icons/icon48.png'),
         title: '🎯 Focus Mode Ended',
         message: 'Focus mode has been turned off. You can now access social media sites.',
         priority: 2
+      }, (notificationId) => {
+        if (chrome.runtime.lastError) {
+          console.error('Focus end notification error:', chrome.runtime.lastError);
+        }
       });
     } else {
       // Turn on focus mode
@@ -392,10 +396,14 @@ class DetoxTimer {
       // Show start notification
       chrome.notifications.create({
         type: 'basic',
-        iconUrl: 'icons/icon48.png',
+        iconUrl: chrome.runtime.getURL('icons/icon48.png'),
         title: '🎯 Focus Mode Activated!',
         message: `All social media sites are now blocked for ${duration} minutes. Stay focused!`,
         priority: 2
+      }, (notificationId) => {
+        if (chrome.runtime.lastError) {
+          console.error('Focus start notification error:', chrome.runtime.lastError);
+        }
       });
     }
     
@@ -427,10 +435,14 @@ class DetoxTimer {
       // Show completion notification
       chrome.notifications.create({
         type: 'basic',
-        iconUrl: 'icons/icon48.png',
+        iconUrl: chrome.runtime.getURL('icons/icon48.png'),
         title: '✅ Focus Session Complete!',
         message: 'Great job! Your focus session has ended. You can now access social media sites.',
         priority: 2
+      }, (notificationId) => {
+        if (chrome.runtime.lastError) {
+          console.error('Focus completion notification error:', chrome.runtime.lastError);
+        }
       });
       
       // Notify all tabs
@@ -628,23 +640,39 @@ class DetoxTimer {
   }
 
   showWarningNotification(platform, message) {
-    chrome.notifications.create({
-      type: 'basic',
-      iconUrl: 'icons/icon48.png',
-      title: 'Social Media Detox Timer',
-      message: `${platform}: ${message}`,
-      priority: 1
-    });
+    try {
+      chrome.notifications.create({
+        type: 'basic',
+        iconUrl: chrome.runtime.getURL('icons/icon48.png'),
+        title: 'Social Media Detox Timer',
+        message: `${platform}: ${message}`,
+        priority: 1
+      }, (notificationId) => {
+        if (chrome.runtime.lastError) {
+          console.error('Notification error:', chrome.runtime.lastError);
+        }
+      });
+    } catch (error) {
+      console.error('Failed to show warning notification:', error);
+    }
   }
 
   showRewardNotification(points, reason) {
-    chrome.notifications.create({
-      type: 'basic',
-      iconUrl: 'icons/icon48.png',
-      title: '🎉 Points Earned!',
-      message: `+${points} points: ${reason}`,
-      priority: 0
-    });
+    try {
+      chrome.notifications.create({
+        type: 'basic',
+        iconUrl: chrome.runtime.getURL('icons/icon48.png'),
+        title: '🎉 Points Earned!',
+        message: `+${points} points: ${reason}`,
+        priority: 0
+      }, (notificationId) => {
+        if (chrome.runtime.lastError) {
+          console.error('Notification error:', chrome.runtime.lastError);
+        }
+      });
+    } catch (error) {
+      console.error('Failed to show reward notification:', error);
+    }
   }
 
   showBadgeNotification(badge) {
@@ -655,13 +683,21 @@ class DetoxTimer {
       'points_500': '500 Points Master! 👑'
     };
     
-    chrome.notifications.create({
-      type: 'basic',
-      iconUrl: 'icons/icon48.png',
-      title: '🏅 Badge Unlocked!',
-      message: badgeNames[badge] || 'New achievement unlocked!',
-      priority: 2
-    });
+    try {
+      chrome.notifications.create({
+        type: 'basic',
+        iconUrl: chrome.runtime.getURL('icons/icon48.png'),
+        title: '🏅 Badge Unlocked!',
+        message: badgeNames[badge] || 'New achievement unlocked!',
+        priority: 2
+      }, (notificationId) => {
+        if (chrome.runtime.lastError) {
+          console.error('Notification error:', chrome.runtime.lastError);
+        }
+      });
+    } catch (error) {
+      console.error('Failed to show badge notification:', error);
+    }
   }
 
   async addCustomSite(siteData) {
